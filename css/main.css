@@ -1,0 +1,35 @@
+/*****************************************************************************/
+/*                                Globals                                    */
+/*****************************************************************************/
+hr {
+	margin: 0em;
+	border-style: solid;
+	border-width: 0.5em;
+}
+
+html {
+    font-family: 'Montserrat';
+}
+
+#main_container {
+    height: 100vh;
+}
+
+#ng-view-container {
+	position: relative;
+	/* background: */
+}
+
+#ng-view-parent {
+	overflow-x: hidden;
+	overflow-y: auto;
+}
+
+a { text-decoration: none; }
+/*****************************************************************************/
+/*****************************************************************************/
+
+.pad {
+	padding: 1em;
+}
+
