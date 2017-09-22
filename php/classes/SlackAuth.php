@@ -24,11 +24,11 @@ class SlackAuth
 	}
 
 	private function redirect() {
-		echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . $this->clientId . '&redirect_uri=http://localhost:8080">';
+		echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . $this->clientId;
 	}
 
 	private function getUserInfo() {
-		$url = "https://slack.com/api/oauth.access?client_id=" . $this->clientId . "&client_secret=" . $this->clientSecret . "&code=" . $_GET['code'] . "&redirect_uri=http://localhost:8080";
+		$url = "https://slack.com/api/oauth.access?client_id=" . $this->clientId . "&client_secret=" . $this->clientSecret . "&code=" . $_GET['code'];
 //		echo $url;
 		$curl = curl_init();
 
