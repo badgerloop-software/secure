@@ -1,6 +1,6 @@
 <?php
 
-include 'Secrets.php';
+require_once('Secrets.php');
 class Conn
 {
 	private $conn;

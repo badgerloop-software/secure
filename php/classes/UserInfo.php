@@ -1,22 +1,23 @@
 <?php
 session_start();
-include 'Conn.php';
+require_once('Conn.php');
 class UserInfo
 {
 	private $email;
 	private $conn;
 
-	function __construct($email) {
+	function __construct() {
 		$conn = new Conn();
-		$dbc = $conn->connect();
-		$query = "select t.id from member m, position p, tier t where m.position = p.id and p.level = t.id and m.email = \"$email\"";
+		$this->conn = $conn->connect();
+	}
+
+	public function getUserTier() {
+		$query = 'select t.id from member m, position p, tier t where m.position = p.id and p.level = t.id and m.email = \'' . $_SESSION['userEmail'] . '\'';
 //		echo $query;
-		if($result = $dbc->query($query)) {
+		if($result = $this->conn->query($query)) {
 			while($row = $result->fetch_array())  {
 				$_SESSION['tierId'] = $row['id'];
 			}
 		}
-
-
 	}
 }
