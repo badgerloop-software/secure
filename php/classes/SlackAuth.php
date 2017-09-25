@@ -6,11 +6,13 @@ class SlackAuth
 	public $response = "";
 	private $clientId = "";
 	private $clientSecret = "";
+	private $secret;
 
 	function __construct() {
 		session_start();
 		$secret = new Secrets();
 
+		$this->local = $secret->local;
 		$this->clientId = $secret->clientId;
 		$this->clientSecret = $secret->clientSecret;
 	}
@@ -24,12 +26,19 @@ class SlackAuth
 	}
 
 	private function redirect() {
-//		echo "https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=$this->clientId&redirect_uri=http://localhost:8080";
-//		echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . $this->clientId . '&redirect_uri=http://localhost:8080';
+		if($this->local) {
+			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . $this->clientId . '&redirect_uri=http://localhost:8080">';
+		} else {
+			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . $this->clientId . '">';
+		}
 	}
 
 	private function getUserInfo() {
-		$url = "https://slack.com/api/oauth.access?client_id=" . $this->clientId . "&client_secret=" . $this->clientSecret . "&code=" . $_GET['code'] . '&redirect_uri=http://localhost:8080';
+		if($this->local) {
+			$url = "https://slack.com/api/oauth.access?client_id=" . $this->clientId . "&client_secret=" . $this->clientSecret . "&code=" . $_GET['code'] . '&redirect_uri=http://localhost:8080';
+		} else {
+			$url = "https://slack.com/api/oauth.access?client_id=" . $this->clientId . "&client_secret=" . $this->clientSecret . "&code=" . $_GET['code'];
+		}
 //		echo $url;
 		$curl = curl_init();
 
