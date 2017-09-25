@@ -7,10 +7,10 @@ class Conn
 
 	function __construct() {
 		$secret = new Secrets();
-		$this->serverName = $secret->getServername();
-		$this->username = $secret->getUsername();
-		$this->password = $secret->getPassword();
-		$this->database = $secret->getDatabase();
+		$this->serverName = $secret->serverName;
+		$this->username = $secret->username;
+		$this->password = $secret->password;
+		$this->database = $secret->database;
 	}
 
 	function connect() {

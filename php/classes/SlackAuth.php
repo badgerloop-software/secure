@@ -11,8 +11,8 @@ class SlackAuth
 		session_start();
 		$secret = new Secrets();
 
-		$this->clientId = $secret->getClientId();
-		$this->clientSecret = $secret->getClientSecret();
+		$this->clientId = $secret->clientId;
+		$this->clientSecret = $secret->clientSecret;
 	}
 
 	public function checkAuthStatus() {
