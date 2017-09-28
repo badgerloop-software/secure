@@ -1,23 +1,20 @@
 <?php
 session_start();
-require_once('Conn.php');
+require_once('API.php');
 class UserInfo
 {
-	private $email;
-	private $conn;
+	private $api;
 
 	function __construct() {
-		$conn = new Conn();
-		$this->conn = $conn->connect();
+		$this->api = new API();
 	}
 
 	public function getUserTier() {
-		$query = 'select t.id from member m, position p, tier t where m.position = p.id and p.level = t.id and m.email = \'' . $_SESSION['userEmail'] . '\'';
-//		echo $query;
-		if($result = $this->conn->query($query)) {
-			while($row = $result->fetch_array())  {
-				$_SESSION['tierId'] = $row['id'];
-			}
-		}
+		$response = $this->api->callAPI('https://badgerloop.com/api/php/memberTier.php?email=' . $_SESSION['userEmail']);
+//		echo $response;
+		$decode = json_decode($response);
+		$_SESSION['tierId'] = $decode[0]->id;
+		echo $_SESSION['tierId'];
+
 	}
 }
