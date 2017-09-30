@@ -1,45 +1,35 @@
 <?php
+
 require_once('Secrets.php');
 
 class SlackAuth
 {
-	public $response = "";
-	private $clientId = "";
-	private $clientSecret = "";
-	private $secret;
 
-	function __construct() {
-		session_start();
-		$secret = new Secrets();
+	public static $response = "";
 
-		$this->local = $secret->local;
-		$this->clientId = $secret->clientId;
-		$this->clientSecret = $secret->clientSecret;
+	public static function checkStatus() {
+		if (!$_SESSION['loggedIn'] && is_null($_GET['code']))
+			SlackAuth::redirect();
+		elseif ($_GET['code'])
+			SlackAuth::getUserInfo();
 	}
 
-	public function checkAuthStatus() {
-		if (!$_SESSION['loggedIn'] && is_null($_GET['code'])) {
-			$this->redirect();
-		} elseif ($_GET['code']) {
-			$this->getUserInfo();
-		}
+	private static function redirect() {
+
+		if(Secrets::LOCAL)
+			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . Secrets::ID . '&redirect_uri=http://localhost:8080">';
+		else
+			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . Secrets::ID . '">';
+
 	}
 
-	private function redirect() {
-		if($this->local) {
-			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . $this->clientId . '&redirect_uri=http://localhost:8080">';
-		} else {
-			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . $this->clientId . '">';
-		}
-	}
+	private static function getUserInfo() {
 
-	private function getUserInfo() {
-		if($this->local) {
-			$url = "https://slack.com/api/oauth.access?client_id=" . $this->clientId . "&client_secret=" . $this->clientSecret . "&code=" . $_GET['code'] . '&redirect_uri=http://localhost:8080';
-		} else {
-			$url = "https://slack.com/api/oauth.access?client_id=" . $this->clientId . "&client_secret=" . $this->clientSecret . "&code=" . $_GET['code'];
-		}
-//		echo $url;
+		if(Secrets::LOCAL)
+			$url = "https://slack.com/api/oauth.access?client_id=" . Secrets::ID . "&client_secret=" . Secrets::SECRET . "&code=" . $_GET['code'] . '&redirect_uri=http://localhost:8080';
+		else
+			$url = "https://slack.com/api/oauth.access?client_id=" . Secrets::ID . "&client_secret=" . Secrets::SECRET . "&code=" . $_GET['code'];
+
 		$curl = curl_init();
 
 		curl_setopt($curl, CURLOPT_POST, true);
@@ -47,12 +37,13 @@ class SlackAuth
 		curl_setopt($curl, CURLOPT_RETURNTRANSFER, 1);
 		$result = curl_exec($curl);
 		curl_close($curl);
-		$this->response = $result;
-		$this->saveSession();
+		SlackAuth::$response = $result;
+		SlackAuth::saveSession();
 	}
 
-	private function saveSession() {
-		$json = json_decode($this->response, false);
+	private static function saveSession() {
+
+		$json = json_decode(SlackAuth::$response, false);
 		$userName = $json->user->name;
 		$userEmail = $json->user->email;
 		$_SESSION['loggedIn'] = true;
@@ -63,3 +54,4 @@ class SlackAuth
 		}
 	}
 }
+

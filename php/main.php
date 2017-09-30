@@ -1,10 +1,11 @@
 <?php
+
+session_start();
+
 require_once('classes/SlackAuth.php');
 require_once('classes/UserInfo.php');
 
-$auth = new SlackAuth();
-
-$auth->checkAuthStatus();
+SlackAuth::checkStatus();
 
 $user = new UserInfo();
 
