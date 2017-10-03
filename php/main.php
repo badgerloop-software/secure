@@ -14,5 +14,4 @@ $user->getUserTier();
 ?>
 
 <h2>Email: <?=$_SESSION['userEmail']?>, Tier Id: <?=$_SESSION['tierId']?></h2>
-<p>Test commit.</p>
 
