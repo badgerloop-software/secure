@@ -7,11 +7,12 @@ require_once('classes/UserInfo.php');
 
 SlackAuth::checkStatus();
 
-$user = new UserInfo();
-
-$user->getUserTier();
+# Don't do anything with our custom data for now
+#$user = new UserInfo();
+#$user->getUserTier();
 
 ?>
 
-<h2>Email: <?=$_SESSION['userEmail']?>, Tier Id: <?=$_SESSION['tierId']?></h2>
+<h1>Hello <?=$_SESSION['userName']?>!</h1>
 
+<h2>Email: <?=$_SESSION['userEmail']?></h2>

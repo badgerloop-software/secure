@@ -2,10 +2,11 @@
 
 require_once('Secrets.php');
 
-class SlackAuth
-{
+class SlackAuth {
 
 	public static $response = "";
+
+	const URL_STR = '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . Secrets::ID . '%s">';
 
 	public static function checkStatus() {
 		if (!$_SESSION['loggedIn'] && is_null($_GET['code']))
@@ -15,12 +16,11 @@ class SlackAuth
 	}
 
 	private static function redirect() {
-
 		if(Secrets::LOCAL)
-			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . Secrets::ID . '&redirect_uri=http://localhost:8080">';
+			echo sprintf(SlackAuth::URL_STR,
+						"&redirect_uri=http://localhost:8080");
 		else
-			echo '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . Secrets::ID . '">';
-
+			echo sprintf(SlackAuth::URL_STR, "");
 	}
 
 	private static function getUserInfo() {
@@ -42,7 +42,6 @@ class SlackAuth
 	}
 
 	private static function saveSession() {
-
 		$json = json_decode(SlackAuth::$response, false);
 		$userName = $json->user->name;
 		$userEmail = $json->user->email;
