@@ -16,3 +16,5 @@ SlackAuth::checkStatus();
 <h1>Hello <?=$_SESSION['userName']?>!</h1>
 
 <h2>Email: <?=$_SESSION['userEmail']?></h2>
+
+<p><?=$_SESSION['userAvatar']?></p>

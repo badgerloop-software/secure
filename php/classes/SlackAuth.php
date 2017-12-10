@@ -4,9 +4,9 @@ require_once('Secrets.php');
 
 class SlackAuth {
 
-	public static $response = "";
-
 	const URL_STR = '<meta http-equiv="refresh" content="0; url=https://slack.com/oauth/authorize?scope=identity.basic,identity.email,identity.team,identity.avatar&client_id=' . Secrets::ID . '%s">';
+
+	public static $response = "";
 
 	public static function checkStatus() {
 		if (!$_SESSION['loggedIn'] && is_null($_GET['code']))
@@ -45,12 +45,13 @@ class SlackAuth {
 		$json = json_decode(SlackAuth::$response, false);
 		$userName = $json->user->name;
 		$userEmail = $json->user->email;
-		$_SESSION['loggedIn'] = true;
+		$userAvatarURL = $json->user->image_512;
+		$_SESSION['loggedIn'] = $json->ok;
 
 		if(!is_null($userName) && !is_null($userEmail)) {
 			$_SESSION['userName'] = $userName;
 			$_SESSION['userEmail'] = $userEmail;
+			$_SESSION['userAvatar'] = $userAvatarURL;
 		}
 	}
 }
-
